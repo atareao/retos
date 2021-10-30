@@ -1,0 +1,3 @@
+0 12 * * 2 curl http://retos:8000/api/v1/reto/next/1
+0 12 * * 6 curl http://retos:8000/api/v1/reto/next/1
+0 12 * * 4 curl http://retos:8000/api/v1/tip/next/1

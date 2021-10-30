@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  croni:
+    image: atareao/croni:v1.1
+    container_name: croni_for_retos
+    restart: unless-stopped
+    networks:
+      - internal
+    volumes:
+      - ./crontab:/crontab
+    env_file:
+      - retos_prod.env
+  retos:
+    build: ./
+    image: atareao/retos:v1
+    container_name: retos
+    restart: unless-stopped
+    networks:
+      - internal
+    ports:
+      - 8002:8000
+    volumes:
+      - ./database:/app/database
+    env_file:
+      - retos_prod.env
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.retos.loadbalancer.server.port=8000
+      - traefik.http.routers.retos.entrypoints=http
+      - traefik.http.routers.retos.rule=Host(`retos.territoriolinux.es`)
+      - traefik.http.middlewares.retos-https-redirect.redirectscheme.scheme=https
+      - traefik.http.routers.retos.middlewares=retos-https-redirect
+      - traefik.http.routers.retos-secure.entrypoints=https
+      - traefik.http.routers.retos-secure.rule=Host(`retos.territoriolinux.es`)
+      - traefik.http.routers.retos-secure.tls=true
+      - traefik.http.routers.retos-secure.tls.certresolver=myresolver
+
+networks:
+  internal:
+  proxy:
+#    external: true
+

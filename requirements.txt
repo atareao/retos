@@ -1,0 +1,6 @@
+flask
+gunicorn
+itsdangerous
+requests
+pyinotify
+werkzeug
