@@ -50,12 +50,14 @@ class Tip(Table):
 
     @classmethod
     def get_next_by_category(cls, category_id):
-        condition = f"category_id='{category_id}' AND published = 0 ORDER BY norder ASC"
+        condition = (f"category_id = {category_id} AND (published = 0 OR "
+                      "published IS NULL) ORDER BY norder ASC")
         items = cls.select(condition)
         return items[0] if len(items) > 0 else None
 
     @classmethod
     def get_next_norder(cls, category_id):
-        sqlquery = f"SELECT MAX(norder) FROM {cls.TABLE} WHERE category_id='{category_id}'"
+        sqlquery = (f"SELECT MAX(norder) FROM {cls.TABLE} WHERE "
+                    f"category_id='{category_id}'")
         item = cls.query(sqlquery)
         return item[0][0] + 1

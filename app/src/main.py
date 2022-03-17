@@ -129,14 +129,15 @@ def next_tip(id=None):
     category = Category.get_by_id(id)
     if category:
         tip = Tip.get_next_by_category(id)
-        p = []
-        p.append(f"Tip **{tip.norder}** sobre **{category.name}**")
-        p.append(tip.text)
-        message = "\n".join(p)
-        requests.post(category.tip_webhook, {"content": message})
-        tip.publish()
-        return make_response(jsonify({'status': 'OK',
-                                      'msg': 'Published'}), 200)
+        if tip:
+            p = []
+            p.append(f"Tip **{tip.norder}** sobre **{category.name}**")
+            p.append(tip.text)
+            message = "\n".join(p)
+            requests.post(category.tip_webhook, {"content": message})
+            tip.publish()
+            return make_response(jsonify({'status': 'OK',
+                                          'msg': 'Published'}), 200)
     return not_found(404)
 
 
